@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Online Quiz System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .quiz-container {
+            background: #fff;
+            width: 420px;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .question {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        .options button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 5px;
+            background: #f1f1f1;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .options button:hover {
+            background: #667eea;
+            color: #fff;
+        }
+
+        #nextBtn, #startBtn, #restartBtn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #667eea;
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #result {
+            font-size: 20px;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        footer {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>Online Quiz System</h1>
+
+    <div id="startScreen">
+        <p>Test your knowledge with this interactive quiz.</p>
+        <button id="startBtn">Start Quiz</button>
+    </div>
+
+    <div id="quizScreen" class="hide">
+        <div class="question" id="question"></div>
+        <div class="options" id="options"></div>
+        <button id="nextBtn" class="hide">Next</button>
+    </div>
+
+    <div id="resultScreen" class="hide">
+        <div id="result"></div>
+        <button id="restartBtn">Restart Quiz</button>
+    </div>
+
+    <footer>
+        © 2025 Online Quiz System | AIML
+    </footer>
+</div>
+
+<script>
+    const quizData = [
+        {
+            question: "What does HTML stand for?",
+            options: [
+                "Hyper Text Markup Language",
+                "High Text Machine Language",
+                "Hyperlinks and Text Markup Language",
+                "Home Tool Markup Language"
+            ],
+            answer: 0
+        },
+        {
+            question: "Which language is used for styling web pages?",
+            options: ["HTML", "JQuery", "CSS", "XML"],
+            answer: 2
+        },
+        {
+            question: "Which is not a JavaScript Framework?",
+            options: ["Python Script", "JQuery", "React", "Angular"],
+            answer: 0
+        },
+        {
+            question: "Which is used for web development?",
+            options: ["Python", "Java", "JavaScript", "All of the above"],
+            answer: 3
+        },
+        {
+            question: "What does CSS stand for?",
+            options: [
+                "Creative Style Sheets",
+                "Cascading Style Sheets",
+                "Computer Style Sheets",
+                "Colorful Style Sheets"
+            ],
+            answer: 1
+        }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const startBtn = document.getElementById("startBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const restartBtn = document.getElementById("restartBtn");
+
+    const startScreen = document.getElementById("startScreen");
+    const quizScreen = document.getElementById("quizScreen");
+    const resultScreen = document.getElementById("resultScreen");
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const resultEl = document.getElementById("result");
+
+    startBtn.onclick = () => {
+        startScreen.classList.add("hide");
+        quizScreen.classList.remove("hide");
+        loadQuestion();
+    };
+
+    function loadQuestion() {
+        nextBtn.classList.add("hide");
+        questionEl.innerText = quizData[currentQuestion].question;
+        optionsEl.innerHTML = "";
+
+        quizData[currentQuestion].options.forEach((option, index) => {
+            const btn = document.createElement("button");
+            btn.innerText = option;
+            btn.onclick = () => selectOption(index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function selectOption(selected) {
+        const correct = quizData[currentQuestion].answer;
+        if (selected === correct) score++;
+
+        Array.from(optionsEl.children).forEach(btn => btn.disabled = true);
+        nextBtn.classList.remove("hide");
+    }
+
+    nextBtn.onclick = () => {
+        currentQuestion++;
+        if (currentQuestion < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    };
+
+    function showResult() {
+        quizScreen.classList.add("hide");
+        resultScreen.classList.remove("hide");
+        resultEl.innerText = `Your Score: ${score} / ${quizData.length}`;
+    }
+
+    restartBtn.onclick = () => {
+        currentQuestion = 0;
+        score = 0;
+        resultScreen.classList.add("hide");
+        startScreen.classList.remove("hide");
+    };
+</script>
+
+</body>
+</html>
